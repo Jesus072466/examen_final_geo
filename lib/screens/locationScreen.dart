@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:examen_final/components/locationListTitle.dart';
 import 'package:examen_final/constants.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +27,7 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
   String formattedAddress = '';
   String name = '';
   List<List<double>> coordinates = [];
+  List<String> names = [];
 
   List<AutoCompletePrediction> placePredictions = [];
 
@@ -34,7 +37,7 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
     });
   }
 
-  Future<Map<String, dynamic>> fetchPlaceDetails(String placeId) async {
+  FutureOr<Map<String, dynamic>> fetchPlaceDetails(String placeId) async {
     final url =
         Uri.https('maps.googleapis.com', '/maps/api/place/details/json', {
       'key': apiKey,
@@ -50,7 +53,7 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
     }
   }
 
-  Future<void> placeAutoComplete(String query) async {
+  FutureOr<void> placeAutoComplete(String query) async {
     Uri uri =
         Uri.https('maps.googleapis.com', '/maps/api/place/autocomplete/json', {
       'key': apiKey,
@@ -69,10 +72,11 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
     }
   }
 
-  Future<void> fetchData() async {
+  FutureOr<void> fetchData() async {
     try {
       var url = Uri.parse('http://10.0.2.2:3900/api/');
-      var response = await http.get(url, headers: {'Access-Control-Allow-Origin': '*'});
+      var response =
+          await http.get(url, headers: {'Access-Control-Allow-Origin': '*'});
 
       if (response.statusCode == 200) {
         // La solicitud fue exitosa
@@ -81,17 +85,23 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
         for (var res in jsonResponse['locaciones']) {
           var lat = res['location']['coordinates'][1];
           var long = res['location']['coordinates'][0];
-          coordinates.add([lat, long]);
+          var name = res['name'];
+          coordinates.add([
+            lat,
+            long,
+          ]);
+          names.add(name);
           //print(coordinates);
         }
         // Realiza cualquier manipulación de los datos recibidos aquí
         //print("*******unu******************"+jsonEncode(jsonResponse['locaciones'][2]['location']['coordinates'][0]));
       } else {
         // La solicitud falló
-        print('*****unu**************Request failed with status: ${response.statusCode}.');
+        print(
+            '*****unu**************Request failed with status: ${response.statusCode}.');
       }
     } catch (e) {
-      print("*******0w0**********************" + e.toString());
+      print("*******0w0**********************error " + e.toString());
     }
   }
 
@@ -183,6 +193,7 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
                           formattedAddress: formattedAddress,
                           name: name,
                           coordinates: coordinates,
+                          names: names,
                         ),
                       ),
                     );
