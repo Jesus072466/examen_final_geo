@@ -82,9 +82,8 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
           var lat = res['location']['coordinates'][1];
           var long = res['location']['coordinates'][0];
           coordinates.add([lat, long]);
-          print(coordinates);
+          //print(coordinates);
         }
-        
         // Realiza cualquier manipulación de los datos recibidos aquí
         //print("*******unu******************"+jsonEncode(jsonResponse['locaciones'][2]['location']['coordinates'][0]));
       } else {
@@ -172,7 +171,7 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
                     Location firstLocation = locations.first;
                     double latitude = firstLocation.latitude;
                     double longitude = firstLocation.longitude;
-
+                    coordinates.add([latitude, longitude]);
                     // Navegar a la vista del mapa y pasar las coordenadas
                     Navigator.push(
                       context,
